@@ -6,8 +6,9 @@ const formSchema = z.object({
   }),
   duration: z
     .string()
-    .regex(/^(3h|12h|1d|7d)$/, {
-      message: 'Duration must be one of: 3h, 12h, 1d, or 7d',
+    // 5-digit cap keeps `Nd` inside the Date range; the presets cover everything shorter
+    .regex(/^(3h|12h|1d|7d|[1-9]\d{0,4}d)$/, {
+      message: 'Duration must be a preset (3h, 12h, 1d, 7d) or 1-99999 days (e.g. 45d)',
     })
     .optional()
     .or(z.literal('')),

@@ -10,3 +10,28 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Form controls sit on #0d0d0d, so give them a raised surface and a neon edge.
+   Unlayered, so these win over the Tailwind utilities on the elements. */
+input,
+select {
+  color-scheme: dark; /* native date picker + dropdown render dark, not OS-light */
+  background-color: #1a1a1a;
+  border-color: #00e600;
+  color: #e5e5e5;
+}
+
+input::placeholder {
+  color: #8a8a8a;
+}
+
+input:hover,
+select:hover {
+  border-color: #00ff00;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #00ff00;
+  outline-offset: 1px;
+}

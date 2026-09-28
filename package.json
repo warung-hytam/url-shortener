@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "node src/lib/duration.test.js",
     "format": "prettier --write \"src/\""
   },
   "dependencies": {

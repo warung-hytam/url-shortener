@@ -2,16 +2,31 @@
 
 import { useState } from 'react';
 import formSchema from '@/lib/schema';
+import { toDurationDays } from '@/lib/duration';
+
+const today = new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
 
 export default function Home() {
   const [formData, setFormData] = useState({ url: '', alias: '', duration: '', server: '' });
+  const [durationChoice, setDurationChoice] = useState('select');
+  const [customDate, setCustomDate] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState('');
   const [copy, setCopy] = useState(false);
 
   const handleOnChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'duration') {
+      setDurationChoice(value);
+      if (value !== 'custom') setCustomDate('');
+      setFormData({ ...formData, duration: value === 'custom' ? (toDurationDays(customDate) ?? '') : value });
+    } else if (name === 'customDate') {
+      setCustomDate(value);
+      setFormData({ ...formData, duration: toDurationDays(value) ?? '' });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleCopy = () => {
@@ -66,7 +81,7 @@ export default function Home() {
               <label className={`block text-[#00ff00] text-lg font-bold ${copy ? '' : 'mb-3'}`}>Shortened URL:</label>
               {copy && <p className="text-[#00ff00] text-center">Copied!</p>}
               <div className="flex gap-2">
-                <input name="shortened" className="border rounded-lg w-full py-2 px-3 focus:outline-none text-gray-700" value={success} readOnly />
+                <input name="shortened" className="border rounded-lg w-full py-2 px-3 focus:outline-none" value={success} readOnly />
                 <button
                   className="bg-[#00e600] hover:bg-[#00b300] hover:text-[#0d0d0d] text-[#252525] font-bold py-2 px-4 rounded focus:outline-none"
                   type="button"
@@ -85,7 +100,7 @@ export default function Home() {
                   value={formData.url}
                   onChange={handleOnChange}
                   placeholder="Enter URL to shorten"
-                  className="border rounded-lg w-full py-2 px-3 focus:outline-none text-gray-700"
+                  className="border rounded-lg w-full py-2 px-3 focus:outline-none"
                   required
                 />
                 {errors.url && <p className="text-red-500 text-sm">{errors.url}</p>}
@@ -106,23 +121,25 @@ export default function Home() {
                       </label>
                       <input
                         name="alias"
+                        id="alias"
                         type="text"
                         value={formData.alias}
                         onChange={handleOnChange}
                         placeholder="Enter custom alias (optional)"
-                        className="border rounded-lg w-full py-2 px-3 focus:outline-none text-gray-700"
+                        className="border rounded-lg w-full py-2 px-3 focus:outline-none"
                       />
                       {errors.alias && <p className="text-red-500 text-sm">{errors.alias}</p>}
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="expiration" className="block text-[#00ff00] text-base font-bold mb-2">
+                      <label htmlFor="duration" className="block text-[#00ff00] text-base font-bold mb-2">
                         Expiration Date
                       </label>
                       <select
                         name="duration"
-                        className="border rounded-lg w-full py-2 px-3 focus:outline-none text-gray-700"
+                        id="duration"
+                        className="border rounded-lg w-full py-2 px-3 focus:outline-none"
                         onChange={handleOnChange}
-                        defaultValue={formData.duration || 'select'}
+                        value={durationChoice}
                       >
                         <option value="select" disabled>
                           Select expiration date
@@ -132,7 +149,19 @@ export default function Home() {
                         <option value="12h">12 Hours</option>
                         <option value="1d">1 Day</option>
                         <option value="7d">1 Week</option>
+                        <option value="custom">Custom Date</option>
                       </select>
+                      {durationChoice === 'custom' && (
+                        <input
+                          name="customDate"
+                          type="date"
+                          min={today}
+                          value={customDate}
+                          onChange={handleOnChange}
+                          aria-label="Custom expiration date"
+                          className="border rounded-lg w-full py-2 px-3 mt-2 focus:outline-none"
+                        />
+                      )}
                       {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
                     </div>
                   </div>
