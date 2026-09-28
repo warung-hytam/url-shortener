@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LinkExpired() {
   const [seconds, setSeconds] = useState(5);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      window.location.href = '/';
+      router.push('/');
     }, 5000);
 
     const interval = setInterval(() => {
@@ -18,7 +20,7 @@ export default function LinkExpired() {
       clearTimeout(timer);
       clearInterval(interval);
     };
-  }, []);
+  }, [router]);
 
   return (
     <div className="flex flex-col min-h-screen min-w-full">

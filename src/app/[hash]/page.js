@@ -3,7 +3,8 @@ import LinkNotFound from '@/components/LinkNotFound';
 import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
-export default async function RedirectPage({ params }) {
+export default async function RedirectPage(props) {
+  const params = await props.params;
   const { hash } = params;
 
   const record = await prisma.urlInfo.findUnique({

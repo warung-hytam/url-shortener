@@ -122,11 +122,12 @@ export default function Home() {
                         name="duration"
                         className="border rounded-lg w-full py-2 px-3 focus:outline-none text-gray-700"
                         onChange={handleOnChange}
-                        defaultValue={formData.duration}
+                        defaultValue={formData.duration || 'select'}
                       >
-                        <option value="" disabled>
+                        <option value="select" disabled>
                           Select expiration date
                         </option>
+                        <option value="">Never Expires</option>
                         <option value="3h">3 Hours</option>
                         <option value="12h">12 Hours</option>
                         <option value="1d">1 Day</option>
